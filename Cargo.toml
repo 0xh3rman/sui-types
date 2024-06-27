@@ -1,0 +1,51 @@
+[workspace]
+resolver = "2"
+
+exclude = ["external-crates/*"]
+
+members = ["crates/sui-types"]
+
+[workspace.package]
+# This version string will be inherited by sui-core, sui-faucet, sui-node, sui-tools, sui-sdk, sui-move-build, and sui crates.
+version = "1.26.2"
+
+[profile.release]
+# debug = 1 means line charts only, which is minimum needed for good stack traces
+debug = 1
+# Write debug info into a separate file.
+split-debuginfo = 'packed'
+# Without stripping, sui binary size would be > 1GB.
+strip = 'debuginfo'
+# Exit process with SIGABRT when any thread panics
+panic = 'abort'
+
+# Same as release, but build binary with debug symbols (binary size will be ~ 1GB).
+[profile.release-dbgsym]
+inherits = "release"
+split-debuginfo = 'off'
+strip = 'none'
+
+# Inherits from the release profile above.
+[profile.bench]
+# For convenience.
+strip = 'none'
+
+# Dependencies that should be kept in sync through the whole workspace
+[workspace.dependencies]
+indexmap = { version = "2.1.0", features = ["serde"] }
+serde = { version = "1.0.144", features = ["derive", "rc"] }
+anyhow = "1.0.71"
+bs58 = { version = "0.5.0", features = ["check"] }
+hex = "0.4.3"
+thiserror = "1.0.40"
+blake2 = "0.10.6"
+strum = { version = "0.24", features = ["derive"] }
+strum_macros = "0.24.3"
+
+bcs = "0.1.6"
+serde_repr = "0.1"
+rand = "0.8.5"
+serde_with = { version = "2.1.0", features = ["hex"] }
+move-core-types = { git = "https://github.com/move-language/move-sui", package = "move-core-types", rev = "82e94df" }
+sui-macros = { git = "https://github.com/mystenlabs/sui", package = "sui-macros", tag = "mainnet-v1.26.2" }
+sui-protocol-config = { git = "https://github.com/mystenlabs/sui", package = "sui-protocol-config", tag = "mainnet-v1.26.2" }
